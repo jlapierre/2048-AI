@@ -99,3 +99,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# macOS Hidden Files
+.DS_Store
