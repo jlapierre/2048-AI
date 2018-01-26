@@ -365,6 +365,12 @@ class CornersProblem(search.SearchProblem):
         return len(actions)
 
 
+# function to calculate Manhattan distances on 4 inputs
+def manhattanFormula(x1, y1, x2, y2):
+    "The Manhattan distance heuristic for a CornerSearchProblem"
+    return abs(x1 - x2) + abs(y1 - y2)
+
+
 def cornersHeuristic(state, problem):
     """
     A heuristic for the CornersProblem that you defined.
@@ -378,11 +384,29 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
-    corners = problem.corners # These are the corner coordinates
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    return 0 # Default to trivial solution
+
+    #Uses Manhattan Distance from the Pac-Man and corners as a heuristic for distance
+    corners = state[1][:] # These are the corner coordinates
+    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
+    heuristic = 0
+
+    referencePoint = state[0]
+
+    while corners != []:
+        x2, y2 = referencePoint
+        distances = []
+
+        for x1, y1 in corners:
+            distances.append(manhattanFormula(x1, y1, x2, y2))
+        heuristic += min(distances)
+
+        referencePoint = corners[distances.index(min(distances))]
+
+        corners.remove(referencePoint)
+
+    return heuristic
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
@@ -507,7 +531,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.bfs(problem)
 
 class AnyFoodSearchProblem(PositionSearchProblem):
     """
@@ -540,10 +564,11 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
-        x,y = state
+        foodList = self.food.asList()
 
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        distance, food = min([(util.manhattanDistance(state, food), food) for food in foodList])
+
+        return state == food
 
 def mazeDistance(point1, point2, gameState):
     """
