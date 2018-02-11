@@ -225,7 +225,68 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #Helpers refactored, contained within getAction. Fails Autograder if made class methods
+        #as in Expectimax solution
+
+        #pacman's maximizer action
+        def alphaBetaMax(gameState, depth, alpha, beta):
+            nextLevel = depth + 1
+            maxScore = -999999
+            legalActions = gameState.getLegalActions(0)
+
+            if nextLevel == self.depth or gameState.isWin() or gameState.isLose(): 
+                return self.evaluationFunction(gameState)
+            
+            for action in legalActions:
+                successor = gameState.generateSuccessor(0, action)
+                maxScore = max(maxScore, alphaBetaMin(successor, nextLevel, 1, alpha, beta))
+                if maxScore > beta:
+                    return maxScore
+                alpha = max(alpha, maxScore)
+            return maxScore
+
+        #minimizer action for ghosts
+        def alphaBetaMin(gameState, depth, agentIndex, alpha, beta):
+            minScore = 999999
+            legalActions = gameState.getLegalActions(agentIndex)
+
+            if gameState.isWin() or gameState.isLose():
+                return self.evaluationFunction(gameState)
+           
+            for action in legalActions:
+            	successor = gameState.generateSuccessor(agentIndex,action)
+            	if agentIndex == (gameState.getNumAgents() - 1):
+                    minScore = min(minScore, alphaBetaMax(successor, depth, alpha, beta))
+                    if minScore < alpha:
+                        return minScore
+                    beta = min(beta, minScore)
+                else:
+                    minScore = min(minScore, alphaBetaMin(successor, depth, agentIndex + 1, alpha, beta))
+                    if minScore < alpha:
+                        return minScore
+                    beta = min(beta, minScore)
+            return minScore
+
+        #getAction method after helpers
+        legalActions = gameState.getLegalActions(0)
+        alphaBetaScore = -999999
+        alphaBetaAction = ''
+        alpha = -999999
+        beta = 999999
+        for action in legalActions:
+            successor = gameState.generateSuccessor(0,action)
+            score = alphaBetaMin(successor,0,1,alpha,beta)
+
+            if score > alphaBetaScore:
+                alphaBetaAction = action
+                alphaBetaScore = score
+            if score > beta:
+                return alphaBetaAction
+
+            alpha = max(alpha,score)
+        return alphaBetaAction
+        
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
@@ -264,7 +325,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         legalActions = gameState.getLegalActions(0)
 
         for action in legalActions:
-        	successor= gameState.generateSuccessor(0, action)
+        	successor = gameState.generateSuccessor(0, action)
         	maxScore = max(maxScore, self.expectimaxGhosts(successor, nextLevel, 1))
 
         return maxScore
@@ -279,7 +340,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         actionCount = len(legalActions)
 
         for action in legalActions:
-            successor= gameState.generateSuccessor(agentIndex, action)
+            successor = gameState.generateSuccessor(agentIndex, action)
 
             if agentIndex == (gameState.getNumAgents() - 1):
                 expectimaxValue = self.expectimaxMax(successor, depth)
@@ -290,7 +351,7 @@ class ExpectimaxAgent(MultiAgentSearchAgent):
         if actionCount == 0:
             return  0
         else:
-        	return float(expectimaxTotal) / float(actionCount)
+        	return float(expectimaxTotal / actionCount)
 
 
 
