@@ -21,7 +21,8 @@ GameManager.prototype.restart = function () {
 
   // run the AI
   while (!this.isGameTerminated()) {
-    var nextMove = expectimax(this.grid);
+    var nextMove = getBestMove(this.grid);
+    //var nextMove = getRandomMove(this.grid);
     this.move(nextMove);
     this.actuate();
   }
