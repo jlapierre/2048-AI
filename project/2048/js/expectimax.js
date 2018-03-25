@@ -74,20 +74,14 @@ function expectimax(grid, depth, agent) {
             var nextState = cloneGrid(grid);
             nextState.insertTile(new Tile(availableCells[i], 4));
             var nextScore = expectimax(nextState, depth - 1, PLAYER);
-            if (nextScore == Number.MIN_VALUE) {
-                score = score + 0;
-            }
-            else {
+            if (nextScore != Number.MIN_VALUE) {
                 score = score + (nextScore * 0.1);
             }
             // if board inserts 2
             var nextState = cloneGrid(grid);
             nextState.insertTile(new Tile(availableCells[i], 2));
             nextScore = expectimax(nextState, depth - 1, PLAYER);
-            if (nextScore == Number.MIN_VALUE) {
-                score = score + 0;
-            }
-            else {
+            if (nextScore != Number.MIN_VALUE) {
                 score = score + (nextScore * 0.9);
             }
         }
