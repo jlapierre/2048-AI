@@ -33,7 +33,7 @@ function getBestMove(grid) {
 function getMovesWithScores(grid, depth) {
     var pairs = [];
     for (var i = 0; i < 4; i++) {
-        var nextState = grid.clone();
+        var nextState = clone(grid);
 
         if (nextState.move(i)) {
             var score = expectimax(grid, depth - 1, BOARD);
@@ -52,7 +52,7 @@ function expectimax(grid, depth, agent) {
         var score = Number.MIN_VALUE;
 
         for (var i = 0; i < 4; i++) {
-            var nextState = grid.clone();
+            var nextState = clone(grid);
             if (nextState.move(i)) {
                 var nextScore = expectimax(nextState, depth - 1, BOARD);
 
@@ -71,7 +71,7 @@ function expectimax(grid, depth, agent) {
 
         for (var i = 0; i < cellCount; i++) {
             // if board inserts 4
-            var nextState = grid.clone();
+            var nextState = clone(grid);
             nextState.insertTile(new Tile(cells[i], 4));
             var nextScore = expectimax(nextState, depth - 1, PLAYER);
             if (nextScore == Number.MIN_VALUE) {
@@ -81,7 +81,7 @@ function expectimax(grid, depth, agent) {
                 score = score + (nextScore * 0.1);
             }
             // if board inserts 2
-            var nextState = grid.clone();
+            var nextState = clone(grid);
             nextState.insertTile(new Tile(cells[i], 2));
             nextScore = expectimax(nextState, depth - 1, PLAYER);
             if (nextScore == Number.MIN_VALUE) {
@@ -94,4 +94,8 @@ function expectimax(grid, depth, agent) {
         score = score / cellCount;
         return score;
     }
+}
+
+function clone(obj) {
+    return JSON.parse(JSON.stringify(obj));
 }
