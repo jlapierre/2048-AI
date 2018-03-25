@@ -13,7 +13,7 @@ function getBestMove(grid) {
     down: 2
     left: 3
      */
-    var depth = 6;
+    var depth = 1;
     var movesWithScore = getMovesWithScores(grid, depth);
 
     var maxScore = Number.MIN_VALUE;
@@ -36,7 +36,7 @@ function getMovesWithScores(grid, depth) {
         var nextState = cloneGrid(grid);
 
         if (nextState.move(i)) {
-            var score = expectimax(grid, depth - 1, BOARD);
+            var score = expectimax(nextState, depth - 1, BOARD);
             pairs.push({move: i, score: score});
         }
     }
@@ -45,7 +45,7 @@ function getMovesWithScores(grid, depth) {
 
 function expectimax(grid, depth, agent) {
     if (depth = 0) {
-        return grid.getScore();
+        return evaluate(grid);
     }
 
     else if (agent == PLAYER) {
@@ -91,7 +91,7 @@ function expectimax(grid, depth, agent) {
 }
 
 function cloneGrid(grid) {
-    var clone = new Grid(grid.size);
+    var clone = new Grid(grid.size, null);
     for(var x in grid.cells){
         for (var y in x) {
             var cell = grid.cells[x][y];
@@ -109,4 +109,10 @@ function cloneGrid(grid) {
 
 function simepleClone(obj) {
     return JSON.parse(JSON.stringify(obj));
+}
+
+// evaluation function
+function evaluate(grid) {
+    // stub for now
+    return 2;
 }
