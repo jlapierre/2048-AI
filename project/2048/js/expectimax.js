@@ -33,7 +33,7 @@ function getBestMove(grid) {
 function getMovesWithScores(grid, depth) {
     var pairs = [];
     for (var i = 0; i < 4; i++) {
-        var nextState = clone(grid);
+        var nextState = cloneGrid(grid);
 
         if (nextState.move(i)) {
             var score = expectimax(grid, depth - 1, BOARD);
@@ -52,7 +52,7 @@ function expectimax(grid, depth, agent) {
         var score = Number.MIN_VALUE;
 
         for (var i = 0; i < 4; i++) {
-            var nextState = clone(grid);
+            var nextState = cloneGrid(grid);
             if (nextState.move(i)) {
                 var nextScore = expectimax(nextState, depth - 1, BOARD);
 
@@ -71,7 +71,7 @@ function expectimax(grid, depth, agent) {
 
         for (var i = 0; i < cellCount; i++) {
             // if board inserts 4
-            var nextState = clone(grid);
+            var nextState = cloneGrid(grid);
             nextState.insertTile(new Tile(availableCells[i], 4));
             var nextScore = expectimax(nextState, depth - 1, PLAYER);
             if (nextScore == Number.MIN_VALUE) {
@@ -81,7 +81,7 @@ function expectimax(grid, depth, agent) {
                 score = score + (nextScore * 0.1);
             }
             // if board inserts 2
-            var nextState = clone(grid);
+            var nextState = cloneGrid(grid);
             nextState.insertTile(new Tile(availableCells[i], 2));
             nextScore = expectimax(nextState, depth - 1, PLAYER);
             if (nextScore == Number.MIN_VALUE) {
@@ -96,12 +96,21 @@ function expectimax(grid, depth, agent) {
     }
 }
 
-function clone(grid) {
-  var newGrid = new Grid(grid.size, null);
-
-  Object.assign(newGrid, grid);
-
-  return newGrid;
+function cloneGrid(grid) {
+    var clone = new Grid(grid.size);
+    for(var x in grid.cells){
+        for (var y in x) {
+            var cell = grid.cells[x][y];
+            if (cell == null){
+                clone.cells[x][y] = null;
+            }
+            else {
+                var position = {x: cell.x, y: cell.y};
+                clone.cells[x][y] = new Tile(position, cell.value);
+            }
+        }
+    }
+    return clone;
 }
 
 function simepleClone(obj) {
