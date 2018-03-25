@@ -19,7 +19,7 @@ function getBestMove(grid) {
     var maxScore = Number.MIN_VALUE;
     var maxMove = null;
 
-    movesWithScore.foreach(function(move) {
+    movesWithScore.forEach(function(move) {
        if (move.score > maxScore) {
            maxScore = move.score;
            maxMove = move.move;
@@ -67,12 +67,12 @@ function expectimax(grid, depth, agent) {
     else if (agent = BOARD) {
         var score = Number.MIN_VALUE;
         var availableCells = grid.availableCells();
-        var cellCount = cells.length;
+        var cellCount = availableCells.length;
 
         for (var i = 0; i < cellCount; i++) {
             // if board inserts 4
             var nextState = clone(grid);
-            nextState.insertTile(new Tile(cells[i], 4));
+            nextState.insertTile(new Tile(availableCells[i], 4));
             var nextScore = expectimax(nextState, depth - 1, PLAYER);
             if (nextScore == Number.MIN_VALUE) {
                 score = score + 0;
@@ -82,7 +82,7 @@ function expectimax(grid, depth, agent) {
             }
             // if board inserts 2
             var nextState = clone(grid);
-            nextState.insertTile(new Tile(cells[i], 2));
+            nextState.insertTile(new Tile(availableCells[i], 2));
             nextScore = expectimax(nextState, depth - 1, PLAYER);
             if (nextScore == Number.MIN_VALUE) {
                 score = score + 0;
@@ -96,6 +96,14 @@ function expectimax(grid, depth, agent) {
     }
 }
 
-function clone(obj) {
+function clone(grid) {
+  var newGrid = new Grid(grid.size, null);
+
+  Object.assign(newGrid, grid);
+
+  return newGrid;
+}
+
+function simepleClone(obj) {
     return JSON.parse(JSON.stringify(obj));
 }
