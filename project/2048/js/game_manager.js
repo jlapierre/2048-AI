@@ -15,17 +15,24 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
 
 // Restart the game
 GameManager.prototype.restart = function () {
+  self = this;
   this.storageManager.clearGameState();
-  this.actuator.continueGame(); // Clear the game won/lost message
+  this.actuator.continueGame();
   this.setup();
 
-  // run the AI
-  while (!this.isGameTerminated()) {
-    var nextMove = getBestMove(this.grid);
-    //var nextMove = getRandomMove(this.grid);
-    this.move(nextMove);
-    this.actuate();
+window.requestAnimationFrame(function () {
+  function Expectimax() {
+      setTimeout(function () {
+        var depth = 4;
+        self.move(getBestMove(self.grid, depth));
+
+      Expectimax();
+      },
+       0);
   }
+  Expectimax();
+});
+
 };
 
 // Keep playing after winning (allows going over 2048)

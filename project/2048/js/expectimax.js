@@ -6,18 +6,18 @@ function getRandomMove(grid) {
 }
 
 // returns the optimal move from the given state
-function getBestMove(grid) {
+getBestMove = function getBestMove(grid, depth) {
     /*
     up: 0
     right: 1
     down: 2
     left: 3
      */
-    var depth = 1;
+    // depth = 8;
     var movesWithScore = getMovesWithScores(grid, depth);
 
     var maxScore = Number.MIN_VALUE;
-    var maxMove = null;
+    var maxMove = 0;
 
     movesWithScore.forEach(function(move) {
        if (move.score > maxScore) {
@@ -30,29 +30,32 @@ function getBestMove(grid) {
     return maxMove;
 }
 
-function getMovesWithScores(grid, depth) {
+getMovesWithScores = function getMovesWithScores(grid, depth) {
     var pairs = [];
     for (var i = 0; i < 4; i++) {
-        var nextState = cloneGrid(grid);
+        var nextState = grid.clone();
 
         if (nextState.move(i)) {
-            var score = expectimax(nextState, depth - 1, BOARD);
+            var score = this.expectimax(nextState, depth - 1, BOARD);
             pairs.push({move: i, score: score});
         }
     }
     return pairs;
 }
 
-function expectimax(grid, depth, agent) {
-    if (depth = 0) {
-        return evaluate(grid);
+expectimax = function expectimax(grid, depth, agent) {
+
+
+
+    if (depth == 0) {
+        return grid.getScore();
     }
 
-    else if (agent == PLAYER) {
+    else if (agent === PLAYER) {
         var score = Number.MIN_VALUE;
 
         for (var i = 0; i < 4; i++) {
-            var nextState = cloneGrid(grid);
+            var nextState = grid.clone();
             if (nextState.move(i)) {
                 var nextScore = expectimax(nextState, depth - 1, BOARD);
 
@@ -64,55 +67,34 @@ function expectimax(grid, depth, agent) {
         }
         return score;
     }
-    else if (agent = BOARD) {
-        var score = Number.MIN_VALUE;
+    else if (agent === BOARD) {
+        var score = 0;
         var availableCells = grid.availableCells();
         var cellCount = availableCells.length;
 
         for (var i = 0; i < cellCount; i++) {
             // if board inserts 4
-            var nextState = cloneGrid(grid);
+            var nextState = grid.clone();
             nextState.insertTile(new Tile(availableCells[i], 4));
             var nextScore = expectimax(nextState, depth - 1, PLAYER);
-            if (nextScore != Number.MIN_VALUE) {
+            if (nextScore == Number.MIN_VALUE) {
+                score = score + 0;
+            }
+            else {
                 score = score + (nextScore * 0.1);
             }
             // if board inserts 2
-            var nextState = cloneGrid(grid);
+            var nextState = grid.clone();
             nextState.insertTile(new Tile(availableCells[i], 2));
             nextScore = expectimax(nextState, depth - 1, PLAYER);
-            if (nextScore != Number.MIN_VALUE) {
+            if (nextScore === Number.MIN_VALUE) {
+                score = score + 0;
+            }
+            else {
                 score = score + (nextScore * 0.9);
             }
         }
         score = score / cellCount;
         return score;
     }
-}
-
-function cloneGrid(grid) {
-    var clone = new Grid(grid.size, null);
-    for(var x in grid.cells){
-        for (var y in x) {
-            var cell = grid.cells[x][y];
-            if (cell == null){
-                clone.cells[x][y] = null;
-            }
-            else {
-                var position = {x: cell.x, y: cell.y};
-                clone.cells[x][y] = new Tile(position, cell.value);
-            }
-        }
-    }
-    return clone;
-}
-
-function simepleClone(obj) {
-    return JSON.parse(JSON.stringify(obj));
-}
-
-// evaluation function
-function evaluate(grid) {
-    // stub for now
-    return 2;
 }
