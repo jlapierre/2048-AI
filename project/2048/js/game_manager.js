@@ -10,6 +10,16 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
 
+  // to measure the time taken to run the algorithm for one game
+  this.startTime = null;
+  this.endTime = null;
+  this.getTimeTaken = function () {
+    return this.endTime - this.startTime;
+  };
+
+  // search depth
+  this.depth = 4;
+
   this.setup();
 }
 
@@ -20,18 +30,21 @@ GameManager.prototype.restart = function () {
   this.actuator.continueGame();
   this.setup();
 
-window.requestAnimationFrame(function () {
-  function Expectimax() {
-      setTimeout(function () {
-        var depth = 4;
-        self.move(getBestMove(self.grid, depth));
+  // log the start time and print the depth for current trial
+  self.startTime = Date.now();
+  console.log("Trial depth: " + self.depth);
 
-      Expectimax();
-      },
-       0);
-  }
-  Expectimax();
-});
+  window.requestAnimationFrame(function () {
+    function Expectimax() {
+        setTimeout(function () {
+          self.move(getBestMove(self.grid, self.depth));
+
+        Expectimax();
+        },
+         0);
+    }
+    Expectimax();
+  });
 
 };
 
@@ -199,6 +212,10 @@ GameManager.prototype.move = function (direction) {
 
     if (!this.movesAvailable()) {
       this.over = true; // Game over!
+
+      // record end time for current trial and log trial duration
+      this.endTime = Date.now();
+      console.log("Trial time: " + this.getTimeTaken());
     }
 
     this.actuate();
