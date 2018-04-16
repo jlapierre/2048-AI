@@ -1,6 +1,7 @@
 const BOARD = "board";
 const PLAYER = "player";
 
+// used for smoketesting purposes when engaging with gamestate integration
 function getRandomMove(grid) {
     return Math.floor(Math.random() * 4);
 }
@@ -13,7 +14,6 @@ getBestMove = function getBestMove(grid, depth) {
     down: 2
     left: 3
      */
-    // depth = 8;
     var movesWithScore = getMovesWithScores(grid, depth);
 
     var maxScore = Number.MIN_VALUE;
@@ -30,6 +30,7 @@ getBestMove = function getBestMove(grid, depth) {
     return maxMove;
 }
 
+// returns pairs of moves and scores from the expectimax algorithm
 getMovesWithScores = function getMovesWithScores(grid, depth) {
     var pairs = [];
     for (var i = 0; i < 4; i++) {
@@ -43,10 +44,8 @@ getMovesWithScores = function getMovesWithScores(grid, depth) {
     return pairs;
 }
 
+//runs expectimax search to a specified depth on a 2048 grid state.
 expectimax = function expectimax(grid, depth, agent) {
-
-
-
     if (depth == 0) {
         return grid.getScore();
     }
