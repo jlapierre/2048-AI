@@ -18,7 +18,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   };
 
   // search depth
-  this.depth = 4;
+  this.depth = 5;
 
   this.setup();
 }
