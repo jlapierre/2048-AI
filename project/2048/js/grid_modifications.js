@@ -172,12 +172,10 @@ Grid.prototype.getScore = function() {
   var self = this;
 
   var score = 0;
-  var directions = [[1, 0], [0, 1], [-1, 0], [0, -1]];
   var gridWeights = [[ 8,  4, 2, 1],
                      [ 16,  8,  4, 2],
                      [ 32,  16,  8,  4],
                      [ 64,  32,  16,  8]];
-
 
   this.eachCell(function(x, y, tile) {
     if (tile) {
@@ -186,6 +184,6 @@ Grid.prototype.getScore = function() {
   });
 
   return score;
-}
+};
 
 
